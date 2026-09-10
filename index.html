@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>English Lesson Builder</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#2f4858">
+<link rel="apple-touch-icon" href="icons/icon-192.svg">
+<link rel="stylesheet" href="css/styles.css">
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body>
+
+<div class="install-banner" id="updateBanner" style="display:none;" onclick="safeReloadForUpdate()">
+  🔄 A new update is ready — tap here to refresh.
+</div>
+
+<header class="app-header">
+  <h1>📖 English Lesson Builder</h1>
+  <p>Record it once — children can hear it forever</p>
+</header>
+
+<main>
+
+  <!-- ============ WORD BANK ============ -->
+  <div class="view active" id="view-wordbank">
+    <div class="card">
+      <h3>🎙 Record a New Word</h3>
+      <p class="hint">Type the word, record how it should be pronounced, and add its meaning.</p>
+      <label>Word</label>
+      <input type="text" id="newWordText" placeholder="e.g. beautiful">
+      <label>Meaning</label>
+      <input type="text" id="newWordMeaning" placeholder="e.g. sundar / looking very nice">
+      <div class="btn-row">
+        <button class="btn brass" id="wordRecordBtn" onclick="startWordRecording()">🎤 Record</button>
+        <button class="btn rust" id="wordStopBtn" style="display:none;" onclick="stopWordRecording()">⏹ Stop</button>
+        <button class="btn ghost" id="wordPreviewBtn" onclick="previewWordRecording()" disabled>▶ Preview</button>
+        <button class="btn primary" id="wordSaveBtn" onclick="saveNewWord()" disabled>💾 Save Word</button>
+      </div>
+      <p class="hint" id="wordRecordStatus"></p>
+    </div>
+
+    <div class="card">
+      <h3>📚 Word Bank</h3>
+      <input type="search" id="wordBankSearch" placeholder="Search words…" oninput="renderWordBankList(this.value)">
+      <div id="wordBankList" style="margin-top:8px;"><p class="hint">Loading…</p></div>
+    </div>
+  </div>
+
+  <!-- ============ CREATE LESSON ============ -->
+  <div class="view" id="view-create">
+    <div class="card">
+      <h3>📝 Step 1: Paste the Lesson</h3>
+      <label>Lesson Title</label>
+      <input type="text" id="lessonTitleInput" placeholder="e.g. Chapter 3 - My Family">
+      <label>Lesson Text</label>
+      <textarea id="lessonTextInput" placeholder="Paste the English lesson text here…"></textarea>
+      <div class="btn-row">
+        <button class="btn primary block" onclick="analyzeLessonText()">🔍 Check Words &amp; Continue</button>
+      </div>
+    </div>
+
+    <div class="card lesson-step" id="lessonStep2" style="display:none;">
+      <h3>✅ Step 2: Word Bank Check</h3>
+      <p class="hint" id="missingWordsSummary"></p>
+      <div id="missingWordsList"></div>
+    </div>
+
+    <div class="card lesson-step" id="lessonStep3" style="display:none;">
+      <h3>🎙 Step 3: Record the Full Lesson</h3>
+      <p class="hint">Tap <b>Start</b>, then read the whole passage aloud in your natural rhythm. While recording, tap each word on screen right when you say it — this lets a child later touch any word and jump straight to that point in your voice. Skipped words are estimated automatically, so it still works even if you don't tap every single one.</p>
+      <div class="btn-row">
+        <button class="btn brass" id="startFullRecBtn" onclick="startFullRecording()">🎙 Start Recording</button>
+        <button class="btn rust" id="stopFullRecBtn" style="display:none;" onclick="stopFullRecording()">⏹ Stop Recording</button>
+        <button class="btn ghost" id="fullRecPreviewBtn" onclick="previewFullRecording()" disabled>▶ Preview</button>
+      </div>
+      <p class="hint" id="fullRecStatus"></p>
+      <div id="fullTextDisplay" style="margin-top:14px; font-size:19px; line-height:2; background:#fffdfa; border:1px solid var(--line); border-radius:12px; padding:14px;"></div>
+
+      <div class="btn-row">
+        <button class="btn sage block" id="generateLessonBtn" onclick="generateLesson()" disabled>📦 Generate Lesson File</button>
+      </div>
+      <p class="hint">This downloads one file you can send directly on WhatsApp — no app needed to open it.</p>
+    </div>
+  </div>
+
+  <!-- ============ MY LESSONS ============ -->
+  <div class="view" id="view-mylessons">
+    <div class="card">
+      <h3>📂 My Lessons</h3>
+      <p class="hint">Every lesson you've generated. Re-download or preview any of them anytime.</p>
+    </div>
+    <div id="lessonsList"><p class="hint">Loading…</p></div>
+  </div>
+
+  <!-- ============ SETTINGS / BACKUP ============ -->
+  <div class="view" id="view-settings">
+    <div class="card">
+      <h3>💾 Export / Import Backup</h3>
+      <p class="hint">Save a backup file anywhere you like (email, USB drive) or restore one on a new device.</p>
+      <div class="btn-row">
+        <button class="btn ghost small" onclick="exportBackupFile()">⬇ Export Backup</button>
+        <button class="btn ghost small" onclick="document.getElementById('restoreFile').click()">⬆ Restore Backup</button>
+        <input type="file" id="restoreFile" accept="application/json" style="display:none;" onchange="importBackupFile(event)">
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>🛡️ Local Safety Backups</h3>
+      <p class="hint">Saved automatically on this device — works even with no internet and no Google Drive set up.</p>
+      <div id="localSnapshotsList"><p class="hint">Loading…</p></div>
+    </div>
+
+    <div class="card">
+      <h3>☁️ Automatic Google Drive Backup</h3>
+      <p class="hint">Once connected, backs up automatically after changes and when you close the app. Older backups beyond the latest 5 are deleted automatically to save space.</p>
+      <div id="driveStatus" class="hint" style="margin:0 0 10px;font-weight:700;color:var(--ink-soft);">Checking status…</div>
+      <label>Google OAuth Client ID <span style="color:var(--rust);">*</span></label>
+      <input type="text" id="driveClientId" placeholder="xxxxxxxx.apps.googleusercontent.com">
+      <p class="hint" style="margin:4px 0 0;">One-time setup — see README.md for how to get this from Google Cloud Console.</p>
+      <div class="btn-row">
+        <button class="btn primary small" onclick="saveDriveClientId()">💾 Save Client ID</button>
+        <button class="btn brass small" id="driveConnectBtn" onclick="connectGoogleDrive()">🔗 Connect Google Drive</button>
+        <button class="btn ghost small" id="driveBackupNowBtn" style="display:none;" onclick="runDriveBackupNow()">☁️ Backup Now</button>
+        <button class="btn rust small" id="driveDisconnectBtn" style="display:none;" onclick="disconnectGoogleDrive()">Disconnect</button>
+      </div>
+      <label style="margin-top:14px;display:flex;align-items:center;gap:8px;font-weight:600;">
+        <input type="checkbox" id="driveAutoBackupToggle" onchange="toggleDriveAutoBackup()" style="width:auto;">
+        Auto-backup after changes &amp; on close
+      </label>
+    </div>
+  </div>
+
+</main>
+
+<div class="tabbar">
+  <button class="tab-btn active" id="tab-wordbank" onclick="showTab('wordbank')"><span class="icon">📚</span>Word Bank</button>
+  <button class="tab-btn" id="tab-create" onclick="showTab('create')"><span class="icon">📝</span>Create</button>
+  <button class="tab-btn" id="tab-mylessons" onclick="showTab('mylessons')"><span class="icon">📂</span>My Lessons</button>
+  <button class="tab-btn" id="tab-settings" onclick="showTab('settings')"><span class="icon">⚙️</span>Settings</button>
+</div>
+
+<script src="js/db.js"></script>
+<script src="js/recorder.js"></script>
+<script src="js/wordbank.js"></script>
+<script src="js/lesson-template.js"></script>
+<script src="js/lessons.js"></script>
+<script src="js/drive-backup.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
