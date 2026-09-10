@@ -39,8 +39,10 @@ then open `http://localhost:8000` in a browser.
 
 ## 2. Using the app
 
-**Word Bank tab** — record individual words once, with a meaning.
-These get reused automatically in every future lesson.
+**Word Bank tab** — record individual words once, with a meaning, and
+trim the clip precisely on a waveform before saving. These get reused
+automatically in every future lesson; tap "✂ Edit" on any word to
+re-trim or re-record it later.
 
 **Create tab** —
 1. Paste the lesson text and give it a title, tap **Check Words & Continue**.
@@ -52,7 +54,21 @@ These get reused automatically in every future lesson.
    point. If you don't manage to tap every word, the app fills the
    gaps automatically by estimating even spacing, so tap-to-jump still
    works everywhere — just less precisely for the un-tapped words.
-4. Tap **Generate Lesson File** — this saves the lesson in the app
+4. After stopping, an editing panel appears with a waveform of your
+   recording:
+   - **Trim**: drag to select the part you want to keep, tap "Keep
+     Only Selection" — everything outside it is removed. Good for
+     cutting dead air at the start/end.
+   - **Remove**: drag to select an unwanted part in the middle (a
+     cough, mistake, long pause), tap "Remove Selection" — that part
+     is deleted and the rest is joined back together seamlessly.
+   - **Re-record part of it**: tap "Select Words to Re-record", tap a
+     word (or tap a second word to select everything between them —
+     one word, a sentence, or the whole passage), then "Re-record
+     Selected". Record just that part again; it's spliced into the
+     exact position, and the timing for every word after it adjusts
+     automatically.
+5. Tap **Generate Lesson File** — this saves the lesson in the app
    and downloads one `.html` file. Share that file directly from your
    phone's Downloads/Files app to WhatsApp.
 
@@ -107,6 +123,11 @@ automatically to save space (audio makes each backup file sizeable).
   recording was made in; very old browsers may have trouble with
   `webm` audio. If you find a specific phone that won't play a
   generated lesson, that's the thing to fix next.
+- **Trimming/cutting/re-recording** re-encodes the edited audio as
+  WAV (uncompressed) so it always plays correctly after being edited
+  — this makes an edited lesson's audio noticeably larger than an
+  unedited one, which is a deliberate trade-off for reliability over
+  file size.
 - **Tap-to-sync accuracy**: precision for "tap anywhere to jump there"
   depends on how many words the teacher tapped while recording — fully
   tapping every word gives frame-accurate jumps; skipped words are

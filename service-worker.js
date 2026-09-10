@@ -1,4 +1,4 @@
-const CACHE_NAME = 'english-lesson-builder-v1';
+const CACHE_NAME = 'english-lesson-builder-v2';
 const FILES_TO_CACHE = [
   './',
   './index.html',
@@ -6,6 +6,8 @@ const FILES_TO_CACHE = [
   './css/styles.css',
   './js/db.js',
   './js/recorder.js',
+  './js/audio-editor.js',
+  './js/waveform-ui.js',
   './js/wordbank.js',
   './js/lesson-template.js',
   './js/lessons.js',
