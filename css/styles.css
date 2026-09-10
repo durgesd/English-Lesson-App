@@ -65,6 +65,34 @@ button:disabled{ opacity:.45; cursor:not-allowed; }
 
 .tap-word{ border-radius:5px; padding:1px 2px; }
 .tap-word.tapped{ background:var(--sage-bg); }
+.tap-word.sel-range{ background:var(--brass-bg); }
+.tap-word.sel-edge{ background:var(--brass); color:#fff; }
+
+/* Waveform editor */
+.wf-container{
+  position:relative; margin:10px 0; touch-action:none; user-select:none;
+}
+.wf-container canvas{ display:block; border-radius:8px; background:#f4f1ea; }
+.wf-selection{
+  position:absolute; top:0; bottom:0; background:rgba(184,146,90,.25);
+  border-left:2px solid var(--brass); border-right:2px solid var(--brass); pointer-events:none;
+}
+.wf-handle{
+  position:absolute; top:0; bottom:0; width:18px; cursor:ew-resize;
+}
+.wf-handle::after{
+  content:''; position:absolute; left:7px; top:50%; transform:translateY(-50%);
+  width:4px; height:28px; background:var(--brass); border-radius:3px;
+}
+.wf-playhead{
+  position:absolute; top:0; bottom:0; width:2px; background:var(--rust); pointer-events:none;
+}
+.wf-time-row{ display:flex; justify-content:space-between; font-size:11px; color:var(--ink-soft); margin-top:2px; }
+
+.edit-toolbar{
+  display:flex; gap:8px; flex-wrap:wrap; align-items:center; background:var(--brass-bg);
+  border-radius:10px; padding:10px; margin-top:10px;
+}
 
 .tabbar{
   position:fixed; bottom:0; left:0; right:0; display:flex; background:#fff;
@@ -78,3 +106,17 @@ button:disabled{ opacity:.45; cursor:not-allowed; }
 .tab-btn.active{ color:var(--navy); font-weight:700; }
 
 .lesson-step{ display:none; }
+
+/* Modal */
+.modal-overlay{
+  position:fixed; inset:0; background:rgba(20,16,10,.55); display:none;
+  align-items:flex-end; justify-content:center; z-index:50;
+}
+.modal-overlay.open{ display:flex; }
+.modal-sheet{
+  background:var(--paper); width:100%; max-width:640px; max-height:88vh; overflow-y:auto;
+  border-radius:18px 18px 0 0; padding:18px 16px 24px;
+}
+.modal-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:6px; }
+.modal-head h3{ margin:0; font-size:16px; }
+.close-x{ background:none; padding:4px 8px; font-size:16px; color:var(--ink-soft); }
