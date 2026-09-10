@@ -1,7 +1,7 @@
 /* =========================================================
    APP SHELL
    ========================================================= */
-const APP_BUILD_VERSION = '2026-09-10-1';
+const APP_BUILD_VERSION = '2026-09-10-2';
 
 function showTab(name) {
   document.querySelectorAll('.view').forEach((v) => v.classList.remove('active'));
